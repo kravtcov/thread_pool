@@ -1,31 +1,36 @@
 #include "thread_pool.h"
 #include <iostream>
+#include <cassert>
 
-ThreadPool::ThreadPool(int thread_num) : thread_pool(thread_num) {
+ThreadPool::ThreadPool(int thread_num) {
 
-    //for (int i = 0; i < thread_num; i++) {
-    for ( std::thread& th : thread_pool) {
-        th = std::thread(threadFunction, std::ref(cv), std::ref(cv_m));
+    assert(thread_num > 0);
+    for (int i = 0; i < thread_num; i++) {
+    //for ( auto &th : thread_pool) {
+        thread_pool.push_back(std::thread(threadFunction, std::ref(this->task_pool),
+                                          std::ref(cv), std::ref(cv_m)));
     }
 }
 
 ThreadPool::~ThreadPool() {
 
+    cv.notify_all();
     for (int i = 0; i < thread_pool.size(); i++) {
         thread_pool[i].join();
     }
 }
 
-void ThreadPool::threadFunction(std::condition_variable &cv, std::mutex &cv_m) {
+void threadFunction(std::queue<Task> &task_pool, std::condition_variable &cv, std::mutex &cv_m) {
     {
         std::lock_guard<std::mutex> lock(cv_m);
         std::cout << "entered thread " << std::this_thread::get_id() << std::endl;
     }
 
-    while (true) {
+    //while (true) {
+    {
         {
             std::unique_lock<std::mutex> lk(cv_m);
-            cv.wait(lk, []{return !this->task_pool.isEmty();});
+            cv.wait(lk);
         }
 
         {

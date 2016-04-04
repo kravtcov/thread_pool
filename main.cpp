@@ -10,7 +10,7 @@ void task(void *task_data) {
 }
 
 int main() {
-    int thread_num = 2;
+    int thread_num = 1;
     ThreadPool pool(thread_num);
 
 

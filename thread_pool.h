@@ -8,6 +8,7 @@
 #include <queue>
 
 typedef void (*Task)(void *);
+void threadFunction(std::queue<Task> &task_pool, std::condition_variable &cv, std::mutex &cv_m);
 
 class ThreadPool {
 public:
@@ -24,7 +25,6 @@ private:
     std::condition_variable cv;
     // std::unique_lock<std::mutex> ul;
 
-    void threadFunction(std::condition_variable &cv, std::mutex &cv_m);
 
 };
 
