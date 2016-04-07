@@ -2,6 +2,9 @@
 #include <algorithm>
 #include <iostream>
 
+template <typename T> class MySet;
+template <typename T> void swap(MySet<T> &first, MySet<T> &second);
+
 template <typename T>
 class MySet {
 public:
@@ -13,9 +16,11 @@ public:
     ~MySet();
     void insert(T elem);
 
+    friend void swap<T>(MySet &first, MySet &second);
+
 private:
-    T *_data_array;
     size_t _size;
+    T *_data_array;
 };
 
 
@@ -35,6 +40,7 @@ MySet<T>::MySet(size_t size)
     std::cout << "constructor" << std::endl;
 }
 
+// copy constructor
 template <typename T>
 MySet<T>::MySet(const MySet& other)
     : _size(other._size),
@@ -44,19 +50,15 @@ MySet<T>::MySet(const MySet& other)
     std::copy_n(other._data_array, _size, _data_array);
 }
 
+// copy assignmen operator
 template <typename T>
 MySet<T>& MySet<T>::operator=(const MySet& other)
 {
     std::cout << "copy assignment operator" << std::endl;
     if (this != &other)
     {
-        if (_size != other._size)
-        {
-            _size = other._size;
-            _data_array = _size ? new T[_size] : nullptr;
-        }
-
-        std::copy_n(other._data_array, _size, _data_array);
+        MySet<T> temp(other);
+        swap(*this, temp);
     }
     return *this;
 }
@@ -87,5 +89,12 @@ void MySet<T>::insert(T elem) {
   //    }
   //}
 
+}
+
+template <typename T>
+void swap(MySet<T> &first, MySet<T> &second)
+{
+    std::swap(first._data_array, second._data_array);
+    std::swap(first._size, second._size);
 }
 
