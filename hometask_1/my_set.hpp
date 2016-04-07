@@ -11,8 +11,10 @@ public:
     bool isEmpty();
     size_t getSize();
     MySet(size_t size = 0);
-    MySet(const MySet& other);
-    MySet& operator=(const MySet& other);
+    MySet(const MySet &other);
+    MySet& operator=(const MySet &other);
+    MySet(MySet &&other);
+    MySet& operator=(MySet &&other);
     ~MySet();
     void insert(T elem);
 
@@ -42,7 +44,7 @@ MySet<T>::MySet(size_t size)
 
 // copy constructor
 template <typename T>
-MySet<T>::MySet(const MySet& other)
+MySet<T>::MySet(const MySet &other)
     : _size(other._size),
       _data_array(_size ? new T[_size] : nullptr)
 {
@@ -52,7 +54,7 @@ MySet<T>::MySet(const MySet& other)
 
 // copy assignmen operator
 template <typename T>
-MySet<T>& MySet<T>::operator=(const MySet& other)
+MySet<T>& MySet<T>::operator=(const MySet &other)
 {
     std::cout << "copy assignment operator" << std::endl;
     if (this != &other)
@@ -63,10 +65,33 @@ MySet<T>& MySet<T>::operator=(const MySet& other)
     return *this;
 }
 
+// move constructor
+template <typename T>
+MySet<T>::MySet(MySet &&other)
+    : _size(0),
+      _data_array(nullptr) // necessary!!
+{
+    std::cout << "move constructor" << std::endl;
+    swap(*this, other);
+}
+
+// move assignmen operator
+template <typename T>
+MySet<T>& MySet<T>::operator=(MySet &&other)
+{
+    std::cout << "move assignment operator" << std::endl;
+    if (this != &other)
+    {
+        swap(*this, other);
+    }
+    return *this;
+}
+
 template <typename T>
 MySet<T>::~MySet() {
     std::cout << "destructor" << std::endl;
-    delete [] _data_array;
+    if (_data_array)
+        delete [] _data_array;
 }
 
 template <typename T>
@@ -94,7 +119,7 @@ void MySet<T>::insert(T elem) {
 template <typename T>
 void swap(MySet<T> &first, MySet<T> &second)
 {
-    std::swap(first._data_array, second._data_array);
     std::swap(first._size, second._size);
+    std::swap(first._data_array, second._data_array);
 }
 
