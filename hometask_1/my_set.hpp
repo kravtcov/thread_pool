@@ -12,9 +12,8 @@ class MySet {
 public:
     MySet(size_t max_size = 0);
     MySet(const MySet &other);
-    MySet& operator=(const MySet &other);
     MySet(MySet &&other);
-    MySet& operator=(MySet &&other);
+    MySet& operator=(MySet other);
     ~MySet();
 
     bool isEmpty() const;
@@ -34,6 +33,12 @@ private:
 };
 
 template <typename T>
+std::ostream& operator<<(std::ostream& out, const MySet<T> &item)
+{
+    return out << item.dump();
+}
+
+template <typename T>
 bool MySet<T>::isContained(const T &item) const
 {
     //for (T set_item : _data_array)
@@ -47,20 +52,12 @@ bool MySet<T>::isContained(const T &item) const
 
 
 template <typename T>
-MySet<T> getSet()
-{
-    std::cout << "get" << std::endl;
-    MySet<T> new_set(16);
-    return new_set;
-}
-
-template <typename T>
 MySet<T>::MySet(size_t max_size)
     : _size(0),
       _max_size(max_size ? max_size : _min_size),
       _data_array(_max_size ? new T[_max_size] : nullptr)
 {
-    std::cout << "constructor with max size " << _max_size << std::endl;
+    std::cout << "constructor with max size " << max_size << std::endl;
 }
 
 // copy constructor
@@ -74,19 +71,6 @@ MySet<T>::MySet(const MySet &other)
     std::cout << "copy constructor of " << *this << std::endl;
 }
 
-// copy assignment operator
-template <typename T>
-MySet<T>& MySet<T>::operator=(const MySet &other)
-{
-    if (this != &other)
-    {
-        MySet<T> temp(other);
-        swap(*this, temp);
-    }
-    std::cout << "copy assignment operator of " << *this << std::endl;
-    return *this;
-}
-
 // move constructor
 template <typename T>
 MySet<T>::MySet(MySet &&other)
@@ -98,15 +82,13 @@ MySet<T>::MySet(MySet &&other)
     std::cout << "move constructor of " << *this << std::endl;
 }
 
-// move assignment operator
+// assignment operator
 template <typename T>
-MySet<T>& MySet<T>::operator=(MySet &&other)
+MySet<T>& MySet<T>::operator=(MySet other)
 {
-    if (this != &other)
-    {
-        swap(*this, other);
-    }
-    std::cout << "move assignment operator of " << *this << std::endl;
+    // there is waste copy in constructor while this == &other
+    swap(*this, other);
+    std::cout << "assignment operator of " << *this << std::endl;
     return *this;
 }
 
@@ -138,8 +120,8 @@ void MySet<T>::insert(const T &item) {
         MySet<T> updated_set(_max_size * 2);
         std::copy_n(_data_array, _size, updated_set._data_array);
         updated_set._size = _size;
+
         swap(*this, updated_set);
-        //*this = std::move(updated_set);
     }
 
     _data_array[_size++] = item;
@@ -159,7 +141,7 @@ std::string MySet<T>::dump() const
     std::ostringstream oss;
     if (!_size)
     {
-        oss << "item is empty";
+        oss << "an empty item";
         return oss.str();
     }
 
@@ -173,10 +155,4 @@ std::string MySet<T>::dump() const
     }
     oss << "}";
     return oss.str();
-}
-
-template <typename T>
-std::ostream& operator<<(std::ostream& out, const MySet<T> &item)
-{
-    return out << item.dump();
 }

@@ -8,14 +8,27 @@ int main() {
     std::cout << "first after () " << first << std::endl << std::endl;
 
     first.insert(33);
-    std::cout << "first after 33 " << first << std::endl << std::endl;
+    std::cout << "first after insert 33 " << first << std::endl << std::endl;
 
     first.insert(44);
-    std::cout << "first after 44 " << first << std::endl << std::endl;
+    std::cout << "first after insert 44 " << first << std::endl << std::endl;
     first.insert(33);
-    std::cout << "first after 33 " << first << std::endl << std::endl;
+    std::cout << "first after insert 33 " << first << std::endl << std::endl;
     first.insert(55);
-    std::cout << "first after 55 " << first << std::endl << std::endl;
+    std::cout << "first after insert 55 " << first << std::endl << std::endl;
+
+    MySet<int> second;
+    second = first;
+    std::cout << "second after first copy " << second << std::endl << std::endl;
+
+    MySet<int> third;
+    third = MySet<int>(5);
+    std::cout << "third after = to 5 " << third << std::endl << std::endl;
+
+    MySet<int> forth(second);
+    std::cout << "forth after () " << third << std::endl << std::endl;
+    forth = forth;
+    std::cout << "forth after = to itself " << third << std::endl << std::endl;
 
     return 0;
 }
