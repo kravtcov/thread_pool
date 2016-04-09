@@ -18,7 +18,7 @@ public:
     bool isEmpty() const;
     size_t getSize() const;
     bool isContained(const T &item) const;
-    void append(const T &item);
+    void insert(const T &item);
 
     friend void swap<T>(MySet &first, MySet &second);
 
@@ -30,6 +30,7 @@ private:
 template <typename T>
 bool MySet<T>::isContained(const T &item) const
 {
+    //for (T set_item : _data_array)
     for (size_t i = 0; i < _size; i++)
     {
         if (_data_array[i] == item)
@@ -118,7 +119,7 @@ size_t MySet<T>::getSize() const {
 }
 
 template <typename T>
-void MySet<T>::append(const T &item) {
+void MySet<T>::insert(const T &item) {
     if (!isContained(item)) {
         MySet<T> updated_set(_size + 1);
         std::copy_n(_data_array, _size, updated_set._data_array);

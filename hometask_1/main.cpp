@@ -5,9 +5,9 @@
 
 int main() {
     MySet<int> first;
-    first.append(33);
-    first.append(44);
-    first.append(33);
+    first.insert(33);
+    first.insert(44);
+    first.insert(33);
 
     std::cout << "first size is " << first.getSize() << std::endl;
 
