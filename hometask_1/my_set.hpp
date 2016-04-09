@@ -8,7 +8,8 @@ template <typename T> class MySet;
 template <typename T> void swap(MySet<T> &first, MySet<T> &second);
 
 template <typename T>
-class MySet {
+class MySet
+{
 public:
     MySet(size_t max_size = 0);
     MySet(const MySet &other);
@@ -20,6 +21,7 @@ public:
     size_t getSize() const;
     bool isContained(const T &item) const;
     void insert(const T &item);
+    void extend(const MySet &other);
 
     std::string dump() const;
 
@@ -33,6 +35,14 @@ private:
 };
 
 template <typename T>
+void swap(MySet<T> &first, MySet<T> &second)
+{
+    std::swap(first._size, second._size);
+    std::swap(first._max_size, second._max_size);
+    std::swap(first._data_array, second._data_array);
+}
+
+template <typename T>
 std::ostream& operator<<(std::ostream& out, const MySet<T> &item)
 {
     return out << item.dump();
@@ -42,9 +52,9 @@ template <typename T>
 bool MySet<T>::isContained(const T &item) const
 {
     //for (T set_item : _data_array)
-    for (size_t i = 0; i < _size; i++)
+    for (size_t offset = 0; offset < _size; ++offset)
     {
-        if (_data_array[i] == item)
+        if (_data_array[offset] == item)
             return true;
     }
     return false;
@@ -93,24 +103,28 @@ MySet<T>& MySet<T>::operator=(MySet other)
 }
 
 template <typename T>
-MySet<T>::~MySet() {
+MySet<T>::~MySet()
+{
     std::cout << "destructor of " << *this << std::endl;
     if (_data_array)
         delete [] _data_array;
 }
 
 template <typename T>
-bool MySet<T>::isEmpty() const {
+bool MySet<T>::isEmpty() const
+{
     return !_size;
 }
 
 template <typename T>
-size_t MySet<T>::getSize() const {
+size_t MySet<T>::getSize() const
+{
     return _size;
 }
 
 template <typename T>
-void MySet<T>::insert(const T &item) {
+void MySet<T>::insert(const T &item)
+{
     if (isContained(item)) {
         return;
     }
@@ -123,24 +137,22 @@ void MySet<T>::insert(const T &item) {
 
         swap(*this, updated_set);
     }
-
     _data_array[_size++] = item;
 }
 
 template <typename T>
-void swap(MySet<T> &first, MySet<T> &second)
+void MySet<T>::extend(const MySet<T> &other)
 {
-    std::swap(first._size, second._size);
-    std::swap(first._max_size, second._max_size);
-    std::swap(first._data_array, second._data_array);
+    for (size_t offset = 0; offset < other._size; ++offset) {
+        insert(other._data_array[offset]);
+    }
 }
 
 template <typename T>
 std::string MySet<T>::dump() const
 {
     std::ostringstream oss;
-    if (!_size)
-    {
+    if (!_size) {
         oss << "an empty item";
         return oss.str();
     }
@@ -149,8 +161,7 @@ std::string MySet<T>::dump() const
     oss << "{ " << first_item;
 
     size_t second_item_index = 1;
-    for (size_t offset = second_item_index; offset < _size; offset++)
-    {
+    for (size_t offset = second_item_index; offset < _size; ++offset) {
         oss << ", " << _data_array[offset];
     }
     oss << "}";

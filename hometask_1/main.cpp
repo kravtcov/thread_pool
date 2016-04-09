@@ -26,9 +26,22 @@ int main() {
     std::cout << "third after = to 5 " << third << std::endl << std::endl;
 
     MySet<int> forth(second);
-    std::cout << "forth after () " << third << std::endl << std::endl;
+    std::cout << "forth after () " << forth << std::endl << std::endl;
     forth = forth;
-    std::cout << "forth after = to itself " << third << std::endl << std::endl;
+    std::cout << "forth after = to itself " << forth << std::endl << std::endl;
+
+
+    MySet<int> fifth;
+    for (int i = 40; i < 50; i++) {
+        fifth.insert(i);
+    }
+    std::cout << "fifth after for " << fifth << std::endl << std::endl;
+
+    fifth.extend(first);
+    std::cout << "fifth after extend " << fifth << std::endl << std::endl;
+
+    first.extend(fifth);
+    std::cout << "first after extend " << first << std::endl << std::endl;
 
     return 0;
 }
