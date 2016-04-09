@@ -10,7 +10,7 @@ template <typename T> void swap(MySet<T> &first, MySet<T> &second);
 template <typename T>
 class MySet {
 public:
-    MySet(size_t size = 0);
+    MySet(size_t max_size = 0);
     MySet(const MySet &other);
     MySet& operator=(const MySet &other);
     MySet(MySet &&other);
@@ -27,7 +27,9 @@ public:
     friend void swap<T>(MySet &first, MySet &second);
 
 private:
-    size_t _size;
+    size_t _size;     // the current size
+    size_t _max_size; // the allocated size
+    static const size_t _min_size = 1;
     T *_data_array;
 };
 
@@ -53,24 +55,26 @@ MySet<T> getSet()
 }
 
 template <typename T>
-MySet<T>::MySet(size_t size)
-    : _size(size),
-      _data_array(_size ? new T[_size] : nullptr)
+MySet<T>::MySet(size_t max_size)
+    : _size(0),
+      _max_size(max_size ? max_size : _min_size),
+      _data_array(_max_size ? new T[_max_size] : nullptr)
 {
-    std::cout << "constructor" << std::endl;
+    std::cout << "constructor with max size " << _max_size << std::endl;
 }
 
 // copy constructor
 template <typename T>
 MySet<T>::MySet(const MySet &other)
     : _size(other._size),
-      _data_array(_size ? new T[_size] : nullptr)
+      _max_size(other._max_size),
+      _data_array(_max_size ? new T[_max_size] : nullptr)
 {
     std::copy_n(other._data_array, _size, _data_array);
     std::cout << "copy constructor of " << *this << std::endl;
 }
 
-// copy assignmen operator
+// copy assignment operator
 template <typename T>
 MySet<T>& MySet<T>::operator=(const MySet &other)
 {
@@ -87,13 +91,14 @@ MySet<T>& MySet<T>::operator=(const MySet &other)
 template <typename T>
 MySet<T>::MySet(MySet &&other)
     : _size(0),
+      _max_size(_min_size),
       _data_array(nullptr) // necessary!!
 {
     swap(*this, other);
     std::cout << "move constructor of " << *this << std::endl;
 }
 
-// move assignmen operator
+// move assignment operator
 template <typename T>
 MySet<T>& MySet<T>::operator=(MySet &&other)
 {
@@ -124,25 +129,26 @@ size_t MySet<T>::getSize() const {
 
 template <typename T>
 void MySet<T>::insert(const T &item) {
-    if (!isContained(item)) {
-        MySet<T> updated_set(_size + 1);
-        std::copy_n(_data_array, _size, updated_set._data_array);
-        updated_set._data_array[_size] = item;
-        *this = std::move(updated_set);
-
-    //if ( _size == _max_size) {
-    //    _max_size *= 2;
-    //    T temp_data = new T[_max_size];
-
-    //}
+    if (isContained(item)) {
+        return;
     }
 
+    if ( _size == _max_size) {
+        // reallocate data
+        MySet<T> updated_set(_max_size * 2);
+        std::copy_n(_data_array, _size, updated_set._data_array);
+        swap(*this, updated_set);
+        //*this = std::move(updated_set);
+    }
+
+    this->_data_array[_size++] = item;
 }
 
 template <typename T>
 void swap(MySet<T> &first, MySet<T> &second)
 {
     std::swap(first._size, second._size);
+    std::swap(first._max_size, second._max_size);
     std::swap(first._data_array, second._data_array);
 }
 
