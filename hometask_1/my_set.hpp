@@ -8,15 +8,17 @@ template <typename T> void swap(MySet<T> &first, MySet<T> &second);
 template <typename T>
 class MySet {
 public:
-    bool isEmpty();
-    size_t getSize();
     MySet(size_t size = 0);
     MySet(const MySet &other);
     MySet& operator=(const MySet &other);
     MySet(MySet &&other);
     MySet& operator=(MySet &&other);
     ~MySet();
-    void insert(T elem);
+
+    bool isEmpty() const;
+    size_t getSize() const;
+    bool isContained(const T &item) const;
+    void insert(const T &item);
 
     friend void swap<T>(MySet &first, MySet &second);
 
@@ -24,6 +26,17 @@ private:
     size_t _size;
     T *_data_array;
 };
+
+template <typename T>
+bool MySet<T>::isContained(const T &item) const
+{
+    for (T set_item : _data_array)
+    {
+        if (set_item == item)
+            return true;
+    }
+    return false;
+}
 
 
 template <typename T>
@@ -95,24 +108,29 @@ MySet<T>::~MySet() {
 }
 
 template <typename T>
-bool MySet<T>::isEmpty() {
+bool MySet<T>::isEmpty() const {
     return !_size;
 }
 
 template <typename T>
-size_t MySet<T>::getSize() {
+size_t MySet<T>::getSize() const {
     return _size;
 }
 
 template <typename T>
-void MySet<T>::insert(T elem) {
-  //if ( find(elem) == 0) {
-  //    if ( _size == _max_size) {
-  //        _max_size *= 2;
-  //        T temp_data = new T[_max_size];
+void MySet<T>::insert(const T &item) {
+  if (!isContained(item)) {
+      MySet<T> updated_set(_size + 1);
+      updated_set = *this;
+      *this = std::move(updated_set);
+      _data_array[_size++] = item;
 
-  //    }
-  //}
+    //if ( _size == _max_size) {
+    //    _max_size *= 2;
+    //    T temp_data = new T[_max_size];
+
+    //}
+  }
 
 }
 
