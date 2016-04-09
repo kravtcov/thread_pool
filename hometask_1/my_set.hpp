@@ -1,6 +1,8 @@
 #pragma once
 #include <algorithm>
 #include <iostream>
+#include <string>
+#include <sstream>
 
 template <typename T> class MySet;
 template <typename T> void swap(MySet<T> &first, MySet<T> &second);
@@ -19,6 +21,8 @@ public:
     size_t getSize() const;
     bool isContained(const T &item) const;
     void insert(const T &item);
+
+    std::string dump() const;
 
     friend void swap<T>(MySet &first, MySet &second);
 
@@ -62,20 +66,20 @@ MySet<T>::MySet(const MySet &other)
     : _size(other._size),
       _data_array(_size ? new T[_size] : nullptr)
 {
-    std::cout << "copy constructor" << std::endl;
     std::copy_n(other._data_array, _size, _data_array);
+    std::cout << "copy constructor of " << *this << std::endl;
 }
 
 // copy assignmen operator
 template <typename T>
 MySet<T>& MySet<T>::operator=(const MySet &other)
 {
-    std::cout << "copy assignment operator" << std::endl;
     if (this != &other)
     {
         MySet<T> temp(other);
         swap(*this, temp);
     }
+    std::cout << "copy assignment operator of " << *this << std::endl;
     return *this;
 }
 
@@ -85,25 +89,25 @@ MySet<T>::MySet(MySet &&other)
     : _size(0),
       _data_array(nullptr) // necessary!!
 {
-    std::cout << "move constructor" << std::endl;
     swap(*this, other);
+    std::cout << "move constructor of " << *this << std::endl;
 }
 
 // move assignmen operator
 template <typename T>
 MySet<T>& MySet<T>::operator=(MySet &&other)
 {
-    std::cout << "move assignment operator" << std::endl;
     if (this != &other)
     {
         swap(*this, other);
     }
+    std::cout << "move assignment operator of " << *this << std::endl;
     return *this;
 }
 
 template <typename T>
 MySet<T>::~MySet() {
-    std::cout << "destructor" << std::endl;
+    std::cout << "destructor of " << *this << std::endl;
     if (_data_array)
         delete [] _data_array;
 }
@@ -142,3 +146,30 @@ void swap(MySet<T> &first, MySet<T> &second)
     std::swap(first._data_array, second._data_array);
 }
 
+template <typename T>
+std::string MySet<T>::dump() const
+{
+    std::ostringstream oss;
+    if (!_size)
+    {
+        oss << "item is empty";
+        return oss.str();
+    }
+
+    T first_item = _data_array[0];
+    oss << "{ " << first_item;
+
+    size_t second_item_index = 1;
+    for (size_t offset = second_item_index; offset < _size; offset++)
+    {
+        oss << ", " << _data_array[offset];
+    }
+    oss << "}";
+    return oss.str();
+}
+
+template <typename T>
+std::ostream& operator<<(std::ostream& out, const MySet<T> &item)
+{
+    return out << item.dump();
+}

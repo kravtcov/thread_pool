@@ -5,11 +5,14 @@
 
 int main() {
     MySet<int> first;
+    std::cout << "first " << first << std::endl;
+
     first.insert(33);
+    std::cout << "first " << first << std::endl;
+
     first.insert(44);
     first.insert(33);
-
-    std::cout << "first size is " << first.getSize() << std::endl;
+    std::cout << "first " << first << std::endl;
 
     return 0;
 }
