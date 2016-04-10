@@ -78,10 +78,10 @@ template <typename T>
 int MySet<T>::getIndexOf(const T &item) const
 {
     //for (T set_item : _data_array)
-    for (size_t offset = 0; offset < _size; ++offset)
+    for (size_t idx = 0; idx < _size; ++idx)
     {
-        if (_data_array[offset] == item)
-            return offset;
+        if (_data_array[idx] == item)
+            return idx;
     }
     return -1;
 }
@@ -169,8 +169,8 @@ void MySet<T>::insert(const T &item)
 template <typename T>
 void MySet<T>::extend(const MySet<T> &other)
 {
-    for (size_t offset = 0; offset < other._size; ++offset) {
-        insert(other._data_array[offset]);
+    for (size_t idx = 0; idx < other._size; ++idx) {
+        insert(other._data_array[idx]);
     }
 }
 
@@ -187,8 +187,8 @@ void MySet<T>::erase(const T &item)
 template <typename T>
 void MySet<T>::erase(const MySet<T> &other)
 {
-    for (size_t offset = 0; offset < other._size; ++offset) {
-        erase(other._data_array[offset]);
+    for (size_t idx = 0; idx < other._size; ++idx) {
+        erase(other._data_array[idx]);
     }
 }
 
@@ -205,8 +205,8 @@ std::string MySet<T>::dump() const
     oss << "{ " << first_item;
 
     size_t second_item_index = 1;
-    for (size_t offset = second_item_index; offset < _size; ++offset) {
-        oss << ", " << _data_array[offset];
+    for (size_t idx = second_item_index; idx < _size; ++idx) {
+        oss << ", " << _data_array[idx];
     }
     oss << "}";
     return oss.str();
@@ -224,9 +224,9 @@ template <typename T>
 MySet<T> setDifference(const MySet<T> &first, const MySet<T> &second)
 {
     MySet<T> set_diff;
-    for (size_t offset = 0; offset < first._size; ++offset) {
+    for (size_t idx = 0; idx < first._size; ++idx) {
         // avoid copying by saving of addr
-        T *first_item = &first._data_array[offset];
+        T *first_item = &first._data_array[idx];
         if (!second.isContained(*first_item))
             set_diff.insert(*first_item);
     }
@@ -238,9 +238,9 @@ template <typename T>
 MySet<T> setIntersection(const MySet<T> &first, const MySet<T> &second)
 {
     MySet<T> intersection;
-    for (size_t offset = 0; offset < first._size; ++offset) {
+    for (size_t idx = 0; idx < first._size; ++idx) {
         // avoid copying by saving of addr
-        T *first_item = &first._data_array[offset];
+        T *first_item = &first._data_array[idx];
         if (second.isContained(*first_item))
             intersection.insert(*first_item);
     }
