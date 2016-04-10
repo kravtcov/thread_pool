@@ -35,6 +35,8 @@ private:
     size_t _max_size; // the allocated size
     static const size_t _min_size = 1;
     T *_data_array;
+
+    int getIndexOf(const T &item) const;
 };
 
 template <typename T>
@@ -54,13 +56,19 @@ std::ostream& operator<<(std::ostream& out, const MySet<T> &item)
 template <typename T>
 bool MySet<T>::isContained(const T &item) const
 {
+    return getIndexOf(item) >= 0;
+}
+
+template <typename T>
+int MySet<T>::getIndexOf(const T &item) const
+{
     //for (T set_item : _data_array)
     for (size_t offset = 0; offset < _size; ++offset)
     {
         if (_data_array[offset] == item)
-            return true;
+            return offset;
     }
-    return false;
+    return -1;
 }
 
 
