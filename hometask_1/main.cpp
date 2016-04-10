@@ -23,7 +23,7 @@ int main() {
 
     MySet<int> third;
     third = MySet<int>(5);
-    std::cout << "third after = to 5 " << third << std::endl << std::endl;
+    std::cout << "third after = to (5) " << third << std::endl << std::endl;
 
     MySet<int> forth(second);
     std::cout << "forth after () " << forth << std::endl << std::endl;
@@ -36,6 +36,8 @@ int main() {
         fifth.insert(i);
     }
     std::cout << "fifth after for " << fifth << std::endl << std::endl;
+
+    std::cout << "union of 1 and 5 " << setUnion(first, fifth) << std::endl << std::endl;
 
     fifth.extend(first);
     std::cout << "fifth after extend " << fifth << std::endl << std::endl;

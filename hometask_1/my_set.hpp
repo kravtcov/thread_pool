@@ -6,6 +6,8 @@
 
 template <typename T> class MySet;
 template <typename T> void swap(MySet<T> &first, MySet<T> &second);
+template <typename T>
+MySet<T> setUnion(const MySet<T> &first, const MySet<T> &second);
 
 template <typename T>
 class MySet
@@ -26,6 +28,7 @@ public:
     std::string dump() const;
 
     friend void swap<T>(MySet &first, MySet &second);
+    friend MySet setUnion<T>(const MySet &first, const MySet &second);
 
 private:
     size_t _size;     // the current size
@@ -166,4 +169,12 @@ std::string MySet<T>::dump() const
     }
     oss << "}";
     return oss.str();
+}
+
+template <typename T>
+MySet<T> setUnion(const MySet<T> &first, const MySet<T> &second)
+{
+    MySet<T> set_union(first);
+    set_union.extend(second);
+    return set_union;
 }
