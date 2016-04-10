@@ -24,6 +24,7 @@ public:
     bool isContained(const T &item) const;
     void insert(const T &item);
     void extend(const MySet &other);
+    void erase(const T &item);
 
     std::string dump() const;
 
@@ -157,6 +158,16 @@ void MySet<T>::extend(const MySet<T> &other)
     for (size_t offset = 0; offset < other._size; ++offset) {
         insert(other._data_array[offset]);
     }
+}
+
+template <typename T>
+void MySet<T>::erase(const T &item)
+{
+    int idx = getIndexOf(item);
+    if (idx == -1)
+        return;
+
+    _data_array[idx] = _data_array[--_size];
 }
 
 template <typename T>
