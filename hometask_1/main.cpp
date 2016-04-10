@@ -45,8 +45,11 @@ int main() {
     first.extend(fifth);
     std::cout << "first after extend " << first << std::endl << std::endl;
 
-    first.erase(46);
-    std::cout << "first after rm 46  " << first << std::endl << std::endl;
+    std::cout << "diff    of 1 and 2 " << setDifference(first, second)
+              << std::endl << std::endl;
+
+    first.erase(second);
+    std::cout << "first after rm sec " << first << std::endl << std::endl;
 
     first.erase(48);
     std::cout << "first after rm 48  " << first << std::endl << std::endl;

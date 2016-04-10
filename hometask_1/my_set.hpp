@@ -6,8 +6,12 @@
 
 template <typename T> class MySet;
 template <typename T> void swap(MySet<T> &first, MySet<T> &second);
+
 template <typename T>
 MySet<T> setUnion(const MySet<T> &first, const MySet<T> &second);
+
+template <typename T>
+MySet<T> setDifference(const MySet<T> &first, const MySet<T> &second);
 
 template <typename T>
 class MySet
@@ -22,14 +26,20 @@ public:
     bool isEmpty() const;
     size_t getSize() const;
     bool isContained(const T &item) const;
+
     void insert(const T &item);
     void extend(const MySet &other);
+
     void erase(const T &item);
+
+    // erase intersection of this and other from this
+    void erase(const MySet<T> &other);
 
     std::string dump() const;
 
     friend void swap<T>(MySet &first, MySet &second);
     friend MySet setUnion<T>(const MySet &first, const MySet &second);
+    friend MySet setDifference<T>(const MySet &first, const MySet &second);
 
 private:
     size_t _size;     // the current size
@@ -171,6 +181,14 @@ void MySet<T>::erase(const T &item)
 }
 
 template <typename T>
+void MySet<T>::erase(const MySet<T> &other)
+{
+    for (size_t offset = 0; offset < other._size; ++offset) {
+        erase(other._data_array[offset]);
+    }
+}
+
+template <typename T>
 std::string MySet<T>::dump() const
 {
     std::ostringstream oss;
@@ -196,4 +214,18 @@ MySet<T> setUnion(const MySet<T> &first, const MySet<T> &second)
     MySet<T> set_union(first);
     set_union.extend(second);
     return set_union;
+}
+
+template <typename T>
+MySet<T> setDifference(const MySet<T> &first, const MySet<T> &second)
+{
+    MySet<T> set_diff;
+    for (size_t offset = 0; offset < first._size; ++offset) {
+        // avoid copying by saving of addr
+        T *first_item = &first._data_array[offset];
+        if (!second.isContained(*first_item))
+            set_diff.insert(*first_item);
+    }
+
+    return set_diff;
 }
