@@ -14,6 +14,9 @@ template <typename T>
 MySet<T> setDifference(const MySet<T> &first, const MySet<T> &second);
 
 template <typename T>
+MySet<T> setIntersection(const MySet<T> &first, const MySet<T> &second);
+
+template <typename T>
 class MySet
 {
 public:
@@ -40,6 +43,7 @@ public:
     friend void swap<T>(MySet &first, MySet &second);
     friend MySet setUnion<T>(const MySet &first, const MySet &second);
     friend MySet setDifference<T>(const MySet &first, const MySet &second);
+    friend MySet setIntersection<T>(const MySet &first, const MySet &second);
 
 private:
     size_t _size;     // the current size
@@ -228,4 +232,18 @@ MySet<T> setDifference(const MySet<T> &first, const MySet<T> &second)
     }
 
     return set_diff;
+}
+
+template <typename T>
+MySet<T> setIntersection(const MySet<T> &first, const MySet<T> &second)
+{
+    MySet<T> intersection;
+    for (size_t offset = 0; offset < first._size; ++offset) {
+        // avoid copying by saving of addr
+        T *first_item = &first._data_array[offset];
+        if (second.isContained(*first_item))
+            intersection.insert(*first_item);
+    }
+
+    return intersection;
 }
