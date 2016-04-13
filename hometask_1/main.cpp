@@ -66,11 +66,14 @@ int main() {
     }
     std::cout << "seventh after for " << seventh << std::endl << std::endl;
 
-    std::cout << "union of 6 and 7 " << setUnion(sixth, seventh) << std::endl << std::endl;
-    std::cout << "diff  of 6 and 7 " << setDifference(sixth, seventh)
+    std::cout << "union of 6 and 7 " << sixth + seventh << std::endl << std::endl;
+    std::cout << "diff  of 6 and 7 " << sixth - seventh
               << std::endl << std::endl;
-    std::cout << "inter of 6 and 7 " << setIntersection(sixth, seventh)
+    std::cout << "inter of 6 and 7 " << (sixth & seventh)
               << std::endl << std::endl;
+
+    sixth &= seventh;
+    std::cout << "sixth &= seventh" << sixth << std::endl << std::endl;
 
     return 0;
 }

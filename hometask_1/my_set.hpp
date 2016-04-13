@@ -37,6 +37,7 @@ public:
 
     // erase intersection of this and other from this
     void erase(const MySet<T> &other);
+    void intersect(const MySet<T> &other);
 
     std::string dump() const;
 
@@ -44,6 +45,10 @@ public:
     friend MySet setUnion<T>(const MySet &first, const MySet &second);
     friend MySet setDifference<T>(const MySet &first, const MySet &second);
     friend MySet setIntersection<T>(const MySet &first, const MySet &second);
+
+    MySet& operator+=(const MySet& other);
+    MySet& operator-=(const MySet& other);
+    MySet& operator&=(const MySet& other);
 
 private:
     size_t _size;     // the current size
@@ -60,6 +65,54 @@ void swap(MySet<T> &first, MySet<T> &second)
     std::swap(first._size, second._size);
     std::swap(first._max_size, second._max_size);
     std::swap(first._data_array, second._data_array);
+}
+
+template <typename T>
+MySet<T>& MySet<T>::operator+=(const MySet<T> &other)
+{
+    extend(other);
+    return *this;
+}
+
+template <typename T>
+MySet<T>& MySet<T>::operator-=(const MySet<T> &other)
+{
+    erase(other);
+    return *this;
+}
+
+template <typename T>
+MySet<T>& MySet<T>::operator&=(const MySet<T> &other)
+{
+    intersect(other);
+    return *this;
+}
+
+template <typename T>
+MySet<T> operator+(MySet<T> &first, const MySet<T> &second)
+{
+    return setUnion(first, second);
+}
+
+// Allow also get 'set union' throught | : A | B == A + B
+template <typename T>
+MySet<T> operator|(MySet<T> &first, const MySet<T> &second)
+{
+    return setUnion(first, second);
+}
+
+template <typename T>
+MySet<T> operator-(MySet<T> &first, const MySet<T> &second)
+{
+    return setDifference(first, second);
+}
+
+// be aware of operator precedence:
+// & has less precedence that <<
+template <typename T>
+MySet<T> operator&(MySet<T> &first, MySet<T> &second)
+{
+    return setIntersection(first, second);
 }
 
 template <typename T>
@@ -189,6 +242,19 @@ void MySet<T>::erase(const MySet<T> &other)
 {
     for (size_t idx = 0; idx < other._size; ++idx) {
         erase(other._data_array[idx]);
+    }
+}
+
+template <typename T>
+void MySet<T>::intersect(const MySet<T> &other)
+{
+    // iterate in reverse for simple erasing
+    for (size_t idx = _size - 1; idx >= 0; --idx) {
+        T *item = &_data_array[idx];
+        if (!other.isContained(*item)) {
+            --_size;
+            _data_array[idx] = _data_array[_size];
+        }
     }
 }
 
